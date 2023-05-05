@@ -1,7 +1,9 @@
 import random
 import re
 
+import django
 from datacenter.models import Schoolkid, Lesson, Commendation, Subject
+from django.shortcuts import get_object_or_404
 
 
 class SubjectDoesNotExist(Exception):
@@ -11,11 +13,10 @@ class SubjectDoesNotExist(Exception):
 class SchoolkidEmptyString(Exception):
     pass
 
-
 def get_schoolkid(name):
     if not name:
         raise SchoolkidEmptyString('Указана пустая строка. Необходимо указать имя ученика.')
-    schoolkid = Schoolkid.objects.get(full_name__contains=name)
+    schoolkid = get_object_or_404(Schoolkid.objects.all(), full_name__contains=name)
     return schoolkid
 
 
@@ -25,11 +26,9 @@ def check_subject(subject, schoolkid):
     subjects = [subject.title for subject in subjects]
     subjects_message = '\n'.join(subjects)
     if subject not in subjects:
-        raise SubjectDoesNotExist(f'Предмет {subject} не найден в списке изучаемых предметов указанного ученика.'
-                                  f' Уточните запрос.\n'
+        raise SubjectDoesNotExist(f'Предмет {subject} не найден в списке изучаемых предметов указанного ученика. Уточните запрос.\n'
                                   f'Необходимо указать предмет из списка:\n{subjects_message}')
     return subject
-
 
 def fix_marks(name):
     schoolkid = get_schoolkid(name)
@@ -56,7 +55,7 @@ def create_commendation(name, subject):
         number_of_schoolkids = re.findall(r"\d+", error.args[0])[0]
         print(f'Найдено {number_of_schoolkids} ученика(ов) с таким именем. Уточните запрос.')
         return
-    except Schoolkid.DoesNotExist:
+    except django.http.response.Http404:
         print(f'Ученик с именем {name} не найден. Уточните запрос.')
         return
     try:
