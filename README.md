@@ -52,3 +52,8 @@ remove_chastisements('<Фамилия Имя ученика>')
 ```
 create_commendation('<Фамилия Имя ученика>', '<Название предмета>')
 ```
+
+## Project Goals
+
+The code is written for educational purposes - 
+it is a lesson in the Python and web development course on the [Devman]((https://dvmn.org)) website.
