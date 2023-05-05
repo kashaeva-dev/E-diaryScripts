@@ -57,9 +57,7 @@ def fix_marks(name):
     if not schoolkid:
         return
     marks = schoolkid.mark_set.filter(points__in=[2, 3])
-    for mark in marks:
-        mark.points = 5
-        mark.save()
+    marks.update(points=5)
 
 
 def remove_chastisements(name):
