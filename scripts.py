@@ -23,3 +23,9 @@ def fix_marks(name):
         mark.points = 5
         mark.save()
 
+
+def remove_chastisements(name):
+    schoolkid = get_schoolkid(name)
+    chastisements = schoolkid.chastisement_set.all()
+    for chastisement in chastisements:
+        chastisement.delete()
