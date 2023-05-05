@@ -2,7 +2,7 @@
 These are scripts for working with a database of a school. 
 They allow you to fix grades, remove chastisements, and create commendations for schoolkids in the database.
 The scripts are written in Python and use the Django framework to interact with the database. 
-They use three models from the **datacenter app**: Schoolkid, Lesson, and Commendation.
+They use three models from the **datacenter app**: Schoolkid, Lesson, Subject and Commendation.
 
 ## How to install
 
@@ -10,6 +10,8 @@ To use these scripts, you need to have the e-diary Django project installed.
 You can find the instructions for installing the e-diary project [here](https://github.com/devmanorg/e-diary/tree/master).
 Once you have the e-diary project installed, copy the **scripts.py** file to the root directory of the project 
 (where the **manage.py** file is located).
+Note that you should find the **schoolbase.sqlite3** file somewhere and copy it
+to the root directory of the Django project as well.
 
 ## How to use
 
