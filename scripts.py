@@ -1,19 +1,34 @@
 import random
 import re
 
-from datacenter.models import Schoolkid, Lesson, Commendation
+from datacenter.models import Schoolkid, Lesson, Commendation, Subject
+
+
+class SubjectDoesNotExist(Exception):
+    pass
+
+
+class SchoolkidEmptyString(Exception):
+    pass
 
 
 def get_schoolkid(name):
-    try:
-        schoolkid = Schoolkid.objects.get(full_name__contains=name)
-    except Schoolkid.MultipleObjectsReturned as error:
-        number_of_schoolkids = re.findall(r"\d+", error.args[0])[0]
-        print(f'Найдено {number_of_schoolkids} ученика(ов) с таким именем. Уточните запрос.')
-    except Schoolkid.DoesNotExist:
-        print(f'Ученик с именем {name} не найден. Уточните запрос.')
-    else:
-        return schoolkid
+    if not name:
+        raise SchoolkidEmptyString('Указана пустая строка. Необходимо указать имя ученика.')
+    schoolkid = Schoolkid.objects.get(full_name__contains=name)
+    return schoolkid
+
+
+def check_subject(subject, schoolkid):
+    subject = subject.title()
+    subjects = Subject.objects.filter(year_of_study=schoolkid.year_of_study)
+    subjects = [subject.title for subject in subjects]
+    subjects_message = '\n'.join(subjects)
+    if subject not in subjects:
+        raise SubjectDoesNotExist(f'Предмет {subject} не найден в списке изучаемых предметов указанного ученика.'
+                                  f' Уточните запрос.\n'
+                                  f'Необходимо указать предмет из списка:\n{subjects_message}')
+    return subject
 
 
 def fix_marks(name):
@@ -32,7 +47,23 @@ def remove_chastisements(name):
 
 
 def create_commendation(name, subject):
-    schoolkid = get_schoolkid(name)
+    try:
+        schoolkid = get_schoolkid(name)
+    except SchoolkidEmptyString as error:
+        print(error)
+        return
+    except Schoolkid.MultipleObjectsReturned as error:
+        number_of_schoolkids = re.findall(r"\d+", error.args[0])[0]
+        print(f'Найдено {number_of_schoolkids} ученика(ов) с таким именем. Уточните запрос.')
+        return
+    except Schoolkid.DoesNotExist:
+        print(f'Ученик с именем {name} не найден. Уточните запрос.')
+        return
+    try:
+        subject = check_subject(subject, schoolkid)
+    except SubjectDoesNotExist as error:
+        print(error)
+        return
 
     texts = [
         'Молодец!',
