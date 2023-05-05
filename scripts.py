@@ -14,3 +14,12 @@ def get_schoolkid(name):
         print(f'Ученик с именем {name} не найден. Уточните запрос.')
     else:
         return schoolkid
+
+
+def fix_marks(name):
+    schoolkid = get_schoolkid(name)
+    marks = schoolkid.mark_set.filter(points__in=[2, 3])
+    for mark in marks:
+        mark.points = 5
+        mark.save()
+
