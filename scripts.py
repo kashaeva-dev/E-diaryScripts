@@ -65,8 +65,7 @@ def remove_chastisements(name):
     if not schoolkid:
         return
     chastisements = schoolkid.chastisement_set.all()
-    for chastisement in chastisements:
-        chastisement.delete()
+    chastisements.filter().delete()
 
 
 def create_commendation(name, subject):
